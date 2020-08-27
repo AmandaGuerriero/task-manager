@@ -4,6 +4,19 @@ var taskIdCounter = 0;
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
 
+var completeEditTask = function (taskName, taskType, taskId) {
+    // find the matching task list item
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    // set new values
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    alert("Task Updated!");
+    formEl.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
+}
+
 var taskFormHandler = function (event){
     event.preventDefault();
     var taskNameInput = document.querySelector("input[name='task-name']").value;
@@ -21,7 +34,21 @@ var taskFormHandler = function (event){
             name: taskNameInput,
             type: taskTypeInput
         };
-        createTaskEl(taskDataObject);
+        var isEdit = formEl.hasAttribute("data-task-id");
+        // has data attribute, so get task id and call function to complete edit process
+        if (isEdit) {
+            var taskId = formEl.getAttribute("data-task-id");
+            completeEditTask(taskNameInput, taskTypeInput, taskId);
+        } 
+        // no data attribute, so create object as normal and pass to createTaskEl function
+        else {
+            var taskDataObj = {
+            name: taskNameInput,
+            type: taskTypeInput
+            };
+        
+            createTaskEl(taskDataObj);
+        }
     }
     formEl.reset()
 }
